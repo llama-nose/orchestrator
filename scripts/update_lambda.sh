@@ -8,22 +8,22 @@ echo "[Step 1] Building Docker image..."
 docker build \
   --build-arg GUARDRAILS_TOKEN=$(echo $GUARDRAILS_TOKEN) \
   --platform linux/amd64 \
-  -t lln-intelligence:test .
+  -t lln-orchestrator:test .
 
 # Login to AWS ECR
 echo "[Step 2] Logging into AWS ECR..."
-aws ecr get-login-password --region us-east-2 --profile lln-profile | docker login --username AWS --password-stdin 158267493868.dkr.ecr.us-east-2.amazonaws.com/lln-intelligence:latest
+aws ecr get-login-password --region us-east-2 --profile lln-profile | docker login --username AWS --password-stdin 158267493868.dkr.ecr.us-east-2.amazonaws.com/lln-orchestrator:latest
 
 # Tag and push Docker image to ECR
 echo "[Step 3] Tagging and pushing Docker image to ECR..."
-docker tag lln-intelligence:test 158267493868.dkr.ecr.us-east-2.amazonaws.com/lln-intelligence:latest
-docker push 158267493868.dkr.ecr.us-east-2.amazonaws.com/lln-intelligence:latest
+docker tag lln-orchestrator:test 158267493868.dkr.ecr.us-east-2.amazonaws.com/lln-orchestrator:latest
+docker push 158267493868.dkr.ecr.us-east-2.amazonaws.com/lln-orchestrator:latest
 
 # Deploy to AWS Lambda
 echo "[Step 4] Updating the AWS Lambda..."
 if aws lambda update-function-code \
     --function-name llnIntelligenceLambda \
-    --image-uri 158267493868.dkr.ecr.us-east-2.amazonaws.com/lln-intelligence:latest \
+    --image-uri 158267493868.dkr.ecr.us-east-2.amazonaws.com/lln-orchestrator:latest \
     --profile lln-profile
 then
     echo "Waiting for the deployment to complete..."
