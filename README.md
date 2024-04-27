@@ -30,6 +30,7 @@ aws iam attach-role-policy --role-name lln-orch-ex --policy-arn arn:aws:iam::aws
 ```bash
 docker build \
   --build-arg GUARDRAILS_TOKEN=$(echo $GUARDRAILS_TOKEN) \
+  --platform linux/amd64 \
   -t lln-orchestrator:test .
 ```
 
