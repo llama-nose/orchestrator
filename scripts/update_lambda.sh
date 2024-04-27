@@ -22,7 +22,7 @@ docker push 158267493868.dkr.ecr.us-east-2.amazonaws.com/lln-orchestrator:latest
 # Deploy to AWS Lambda
 echo "[Step 4] Updating the AWS Lambda..."
 if aws lambda update-function-code \
-    --function-name llnIntelligenceLambda \
+    --function-name llnOrchestratorLambda \
     --image-uri 158267493868.dkr.ecr.us-east-2.amazonaws.com/lln-orchestrator:latest \
     --profile lln-profile
 then
@@ -32,7 +32,7 @@ then
     for attempt in {1..12}; do
         sleep 2
         if aws lambda update-function-configuration \
-            --function-name llnIntelligenceLambda \
+            --function-name llnOrchestratorLambda \
             --profile lln-profile \
             --timeout 120 2>&1 | grep -q "An update is in progress"; then
             echo "Attempt $attempt: Update still in progress, retrying..."
@@ -51,7 +51,7 @@ then
 
         # Test the Lambda function
         aws lambda invoke \
-        --function-name llnIntelligenceLambda \
+        --function-name llnOrchestratorLambda \
         --payload "$PAYLOAD" response.json \
         --profile lln-profile
 
