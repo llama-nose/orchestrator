@@ -27,10 +27,9 @@ def handler(event, context):
     llm_msg = construct_llm_msg(system_msg, user_msg)
 
     # call mule X times
-    call_mule(user_id, session_id, llm_metadata, llm_msg, n)
+    response_ids = call_mule(user_id, session_id, llm_metadata, llm_msg, n)
     
     # write to dynamo
-    response_ids = []
     write_to_dynamo(user_id, session_id, response_ids, llm_metadata)
 
     # Return the message
@@ -40,27 +39,26 @@ def handler(event, context):
     }
 
 def call_mule(user_id, session_id, llm_metadata, llm_msg, n):
+    response_ids = []
     payload = {
             "user_id": user_id,
             "session_id": session_id,
             "llm_metadata": llm_metadata,
             "llm_msg": llm_msg,
         }
-    payload_bytes = json.dumps(payload).encode('utf-8')
-
-    response_ids = []
 
     for _ in range(n):
         response_id = str(uuid.uuid4())
         payload['response_id'] = response_id
+        payload_bytes = json.dumps(payload).encode('utf-8')
         response = lambda_client.invoke(
             FunctionName=function_arn,
             InvocationType='Event',  # This specifies asynchronous execution
             Payload = payload_bytes
         )
-        response_id.append(response_id)
+        response_ids.append(response_id)
 
-    return
+    return response_ids
 
 def write_to_dynamo(user_id, session_id, response_ids, llm_metadata):
     current_timestamp = datetime.utcnow().isoformat()
