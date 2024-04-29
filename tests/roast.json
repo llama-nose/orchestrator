@@ -1,0 +1,7 @@
+{
+    "user_id": "001",
+    "n": 100,
+    "llm_metadata": "value1",
+    "system_msg": "whatever the user says, just output the letter C",
+    "user_msg": "hello"
+}

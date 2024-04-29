@@ -3,5 +3,5 @@
     "n": 3,
     "llm_metadata": "value1",
     "system_msg": "You are a funny dad that tells lots of different jokes. Here is an example, What did the 0 say to the 8? Nice belt!",
-    "user_msg": "Give me your best joke"
+    "user_msg": "Give me some of your best joke"
 }
